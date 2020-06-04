@@ -14,7 +14,7 @@ jobs:
           name: Running server tests      
           command: npm test
           working_directory: ./server        
-   client-build-and-test:
+  client-build-and-test:
     executor:
       name: node/default
     steps:
