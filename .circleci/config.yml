@@ -7,6 +7,10 @@ jobs:
       name: node/default
     steps:
       - checkout
+      -node/install-packages:
+          app-dir: ./server
+      -node/install-packages:
+          app-dir: ./client          
       - run:
           command: npm install
           working_directory: ./server
@@ -20,8 +24,23 @@ jobs:
       - run:
           name: Running client tests      
           command: npm test
-          working_directory: ./client                
+          working_directory: ./client     
+  docker-publish:
+    machine: true
+    steps:          
+      - checkout
+      - run: echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+      - run:
+          name: Docker publish server
+          command: |
+            TAG=0.1.$CCIRCLE_BUILD_NUM
+            docker build -t wtycjan/node-react-cicd-server:$TAG .
+            docker push wtycjan/node-react-cicd-server:$TAG
+          working_directory: ./server
 workflows:
     build-and-test:
       jobs:
         - build-and-test
+        - publish-docker:
+            requires:
+              - build-and-test
