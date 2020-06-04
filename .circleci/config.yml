@@ -6,11 +6,7 @@ jobs:
     executor:
       name: node/default
     steps:
-      - checkout
-      - node/install-packages:
-          app-dir: ./server
-      - node/install-packages:
-          app-dir: ./client          
+      - checkout     
       - run:
           command: npm install
           working_directory: ./server
